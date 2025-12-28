@@ -1,16 +1,12 @@
 from openai import OpenAI
 from .config import settings
 
-# El SDK oficial lee OPENAI_API_KEY del entorno, pero también puedes pasarlo explícito.
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 def generate_answer(user_message: str, model: str) -> str:
-    """
-    Llamada mínima usando Responses API.
-    """
-    resp = client.responses.create(
+    resp = client.chat.completions.create(
         model=model,
-        input=[
+        messages=[
             {
                 "role": "system",
                 "content": (
@@ -21,6 +17,4 @@ def generate_answer(user_message: str, model: str) -> str:
             {"role": "user", "content": user_message},
         ],
     )
-
-    # En los ejemplos oficiales se usa output_text como forma simple de obtener el texto final.
-    return resp.output_text
+    return resp.choices[0].message.content
